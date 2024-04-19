@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class UserPrinciple implements UserDetails {
+public class UserPrincipal implements UserDetails {
     private Long id;
     private String name;
     private String username;
@@ -25,10 +25,10 @@ public class UserPrinciple implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
     }
-    public static UserPrinciple build(User user) {
+    public static UserPrincipal build(User user) {
         List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
                 new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
-        return new UserPrinciple(
+        return new UserPrincipal(
                 user.getId(),
                 user.getName(),
                 user.getUsername(),
