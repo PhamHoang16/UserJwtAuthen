@@ -1,6 +1,6 @@
 package com.example.testjwt.model;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +19,4 @@ public class Role {
     @NaturalId
     @Column(length = 60)
     private RoleName name;
-
-
 }

@@ -1,18 +1,26 @@
 package com.example.testjwt.controllers;
 
+import com.example.testjwt.dto.request.SignInForm;
 import com.example.testjwt.dto.request.SignUpForm;
+import com.example.testjwt.dto.response.JwtResponse;
 import com.example.testjwt.dto.response.ResponseMessage;
 import com.example.testjwt.dto.response.ResponseObject;
 import com.example.testjwt.model.Role;
 import com.example.testjwt.model.RoleName;
 import com.example.testjwt.model.User;
 import com.example.testjwt.repositories.IUserRepository;
+import com.example.testjwt.security.jwt.JwtProvider;
+import com.example.testjwt.security.userprinciple.UserPrinciple;
 import com.example.testjwt.service.IUserService;
 import com.example.testjwt.service.implement.RoleServiceImpl;
 import com.example.testjwt.service.implement.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +41,10 @@ public class AuthController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     IUserRepository userRepository;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    JwtProvider jwtProvider;
 
     @GetMapping("")
     List<User> users () {
@@ -72,7 +84,7 @@ public class AuthController {
 //        return new ResponseEntity<>(new ResponseMessage("Create user success!"), HttpStatus.OK);
 //    }
     @PostMapping("/register")
-public ResponseEntity<?> register(@Valid @RequestBody SignUpForm signUpForm){
+    public ResponseEntity<?> register(@Valid @RequestBody SignUpForm signUpForm){
     if(userService.existsByUsername(signUpForm.getUsername())){
         return new ResponseEntity<>(new ResponseMessage("this username has been used"), HttpStatus.OK);
     }
@@ -98,14 +110,14 @@ public ResponseEntity<?> register(@Valid @RequestBody SignUpForm signUpForm){
         userService.save(user);
         return new ResponseEntity<>(new ResponseMessage("create success!!!"), HttpStatus.OK);
 }
-//    @PostMapping("/signin")
-//    public ResponseEntity<?> login(@Valid @RequestBody SignInForm signInForm) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(signInForm.getUsername(), signInForm.getPassword()));
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        String token = jwtProvider.createToken(authentication);
-//        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
-//        return ResponseEntity.ok(new JwtResponse(token,userPrinciple.getName(), userPrinciple.getAuthorities()));
-//
-//    }
+    @PostMapping("/signin")
+    public ResponseEntity<?> login(@Valid @RequestBody SignInForm signInForm) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(signInForm.getUsername(), signInForm.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.createToken(authentication);
+        UserPrinciple userPrinciple = (UserPrinciple) authentication.getPrincipal();
+        return ResponseEntity.ok(new JwtResponse(token,userPrinciple.getName(), userPrinciple.getAuthorities()));
+
+    }
 }

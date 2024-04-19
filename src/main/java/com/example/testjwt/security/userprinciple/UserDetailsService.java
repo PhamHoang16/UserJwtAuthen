@@ -2,12 +2,12 @@ package com.example.testjwt.security.userprinciple;
 
 import com.example.testjwt.model.User;
 import com.example.testjwt.repositories.IUserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
 
 
 @Service

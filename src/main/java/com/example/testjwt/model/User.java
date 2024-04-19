@@ -1,7 +1,7 @@
 package com.example.testjwt.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import javax.persistence.*;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,8 +16,8 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
 @Builder
+@Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {               //ko cho tạo dữ liệu trùng lặp ở cột này
                 "username"
